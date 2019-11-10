@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
+import argparse
 import os.path
 import yaml
 from jinja2 import Template
+
+
+THEMES_DIR = os.path.expanduser('~/.config/tint/themes/')
+SCRIPTS_DIR = os.path.expanduser('~/.config/tint/scripts/')
 
 
 def load_config(path: str):
@@ -19,8 +24,18 @@ def process_template(template_path, out_path, props):
         f.write(out)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('theme')
+
+    args = parser.parse_args()
+    return args
+
+
 def main():
-    config = load_config('leuven.yaml')
+    args = parse_args()
+    config_path = os.path.join(THEMES_DIR, args.theme + '.yaml')
+    config = load_config(config_path)
     paths = [os.path.expanduser(p) for p in config['paths'].values()]
     for path in paths:
         process_template(path + '.template', path, config)
