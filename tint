@@ -11,14 +11,6 @@ def load_config(path: str):
     return config
 
 
-def process_prop(prop, colors):
-    if isinstance(prop, str):
-        return colors[prop]
-    else:  # must be dict, recurse
-        return {k: process_prop(v, colors)
-                for k, v in prop.items()}
-
-
 def process_template(template_path, out_path, props):
     with open(template_path, 'r') as f:
         template = Template(f.read())
@@ -29,12 +21,9 @@ def process_template(template_path, out_path, props):
 
 def main():
     config = load_config('leuven.yaml')
-    colors = config['colors']
-    props = process_prop(config['properties'], colors)
-    props['colors'] = colors  # put that in there for convenience
     paths = [os.path.expanduser(p) for p in config['paths']]
     for path in paths:
-        process_template(path + '.template', path, props)
+        process_template(path + '.template', path, config)
 
 
 if __name__ == '__main__':
