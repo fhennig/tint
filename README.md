@@ -62,3 +62,19 @@ The idea to use templating was also inspired by
 
 Add variable expansion in the paths.
 
+Works well with `urxvt` and
+(urxvt-config-reload)[https://github.com/regnarg/urxvt-config-reload],
+which allows to trigger reloading of urxvt config in urxvt instances.
+For example:
+
+```
+xrdb -merge ~/.Xdefaults
+
+pids=$(ps axo pid,comm | grep "^[ 0-9]* urxvt\$" | awk "{print \$1}")
+
+for pid in $pids
+do
+    kill -1 $pid  # send SIGHUP
+    echo "TEST $pid"
+done
+```
