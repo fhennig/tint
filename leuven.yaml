@@ -2,6 +2,7 @@ meta:
   description: 'My leuven theme.'
 paths:
   - ~/.config/rofi/config
+  - ~/.config/i3/config
 colors:
   - &white          '#FFFFFF'
   - &grey           '#DDDDDD'
@@ -11,46 +12,46 @@ colors:
   - &red            '#CC0000'
   - &yellow         '#EDD400'
   - &green          '#73D216'
-window_colors:
+i3:
   focused:
     border:         *leuven_blue
-    background:     *leuven_blue
+    bg:             *leuven_blue
     text:           *white
     indicator:      *urgent_blue
-  focused_inactive:
+  inactive:
     border:         *grey
-    background:     *grey
+    bg:             *grey
     text:           *white
     indicator:      *grey
   unfocused:
     border:         *grey
-    background:     *grey
+    bg:             *grey
     text:           *white
     indicator:      *grey
   urgent:
     border:         *leuven_blue
-    background:     *urgent_blue
+    bg:             *urgent_blue
     text:           *white
     indicator:      *urgent_blue
-bar_colors:
+i3bar:
   separator:        *dark_grey
   background:       *white
   statusline:       *dark_grey
-  focused_workspace:
+  focused:
     border:         *leuven_blue
-    background:     *leuven_blue
+    bg:             *leuven_blue
     text:           *white
-  active_workspace:
+  active:
     border:         *grey
-    background:     *white
+    bg:             *white
     text:           *dark_grey
-  inactive_workspace:
+  inactive:
     border:         *grey
-    background:     *white
+    bg:             *white
     text:           *dark_grey
-  urgent_workspace:
+  urgent:
     border:         *urgent_blue
-    background:     *urgent_blue
+    bg:             *urgent_blue
     text:           *white
 status:
   bad:              *red
