@@ -1,8 +1,8 @@
 meta:
   description: 'My leuven theme.'
 paths:
-  - ~/.config/rofi/config
-  - ~/.config/i3/config
+  rofi: ~/.config/rofi/config
+  i3:   ~/.config/i3/config
 colors:
   - &white          '#FFFFFF'
   - &grey           '#DDDDDD'

@@ -21,7 +21,7 @@ def process_template(template_path, out_path, props):
 
 def main():
     config = load_config('leuven.yaml')
-    paths = [os.path.expanduser(p) for p in config['paths']]
+    paths = [os.path.expanduser(p) for p in config['paths'].values()]
     for path in paths:
         process_template(path + '.template', path, config)
 
