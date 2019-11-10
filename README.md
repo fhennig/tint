@@ -2,49 +2,63 @@
 
 A theme switcher.
 
-Idea:
- 
-- have a yaml theme file
-- hava a declarative file that specifies where a theme should be
-  applied.
-- have another file that is a script that is run after the configs
-  were updated.
+`tint` allows fast and convenient theme switching for all your
+applications such as `i3`, `rofi` and `urxvt`.
 
-In the yaml file specify a tree of properties (colors etc, like
-i3-style) In the configs always specify colors like this
-{{basecolor.yellow}} or something like that.
+It works by by processing config *templates* in which the actual color
+codes are filled in.
 
-there should always be a file like that
-.config/i3/config.template
-and from that the tool will make
-.config/i3.config
+A theme is defined in a `yaml` file (see `leuven.yaml` for an
+example).  In there properties and colors are defined.  A config
+template could then look like this:
 
-then in the script I run
-i3-reload
+```
+rofi.color-normal: {{rofi.bg}}, {{rofi.fg}}, {{rofi.bgalt}}, {{rofi.hlbg}}, {{rofi.hlfg}}
+rofi.color-window: {{rofi.background}}, {{rofi.border}}
 
-and that's it.
+rofi.width: 20
 
+rofi.font: inconsolata 14
+```
 
-jinja templating
+The `{{...}}` syntax is part of the templating engine.  It is replaced
+by a property defined in the theme.
 
-yaml file for config
+The template defines which config files to process in a `paths`
+section:
 
+```
+paths:
+  - ~/.config/i3/config
+  - ~/.config/rofi/config
+  - ~/.Xdefaults
+```
 
-by default the themes can live in
-
-~/.config/tint/themes/
-
-in the yaml I can specify paths to hook scripts that should be run.
-
-I should be able to specify a base yaml, where I can configure script
-paths and files to update etc.  In yaml it is also possible to specify
-lists.
-
-~/.config/tint/scripts/
+for every `<path>` it expects the file `<path>.template` to be
+present.  If present, it will generate the config file from the
+template.
 
 
+## TODO
 
-## Inspiration
+include shell script hooks to allow running little scripts like
+`i3-reload` or `xrdb -merge ...`.
 
-j4-make-config
-i3-style
+Handle commandline args.  Handle loading of themes from a default
+location (`~/.config/tint/themes/`).
+
+Maybe allow inheritance ...
+
+## Some more things
+
+Uses jinja for templating.
+
+This project was inspired by
+(i3-style)[https://github.com/altdesktop/i3-style], from which the
+idea of using a `yaml` configuration file was taken.
+
+The idea to use templating was also inspired by
+(j4-make-config)[https://github.com/okraits/j4-make-config].
+
+Add variable expansion in the paths.
+
