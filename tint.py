@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import os.path
 import subprocess
 import yaml
@@ -75,7 +76,15 @@ def edit_theme(theme):
 
 
 def list_themes():
-    print('Not implemented yet.')
+    themes = [filename
+              for filename in os.listdir(THEMES_DIR)
+              if filename.endswith('.yaml')]
+    for filename in themes:
+        theme_name = filename[:-5]
+        theme_path = os.path.join(THEMES_DIR, filename)
+        config = load_config(theme_path)
+        desc = config.get('meta', None).get('description', None)
+        print(f"{theme_name} - {desc}")
 
 
 def main():
