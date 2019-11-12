@@ -40,16 +40,24 @@ def process_hooks(hook_files, props):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('theme')
+    subparsers = parser.add_subparsers(dest='cmd')
+
+    set_theme = subparsers.add_parser('set', help='Set current theme.')
+    set_theme.add_argument('theme',
+                           help='The theme to set. (use list to show themes).')
+
+    edit_theme = subparsers.add_parser('edit', help='Editing themes.')
+    edit_theme.add_argument('theme',
+                            help='Opens the theme config with $EDITOR.')
+
+    list_themes = subparsers.add_parser('ls', help='Display themes.')
 
     args = parser.parse_args()
     return args
 
 
-def main():
-    # read args and theme config
-    args = parse_args()
-    config_path = os.path.join(THEMES_DIR, args.theme + '.yaml')
+def set_theme(theme):
+    config_path = os.path.join(THEMES_DIR, theme + '.yaml')
     config = load_config(config_path)
     config['home'] = os.path.expanduser('~')
     # generate paths
@@ -60,6 +68,27 @@ def main():
     hooks = [os.path.join(SCRIPTS_DIR, script_file)
              for script_file in config['hooks']['post_generate']]
     process_hooks(hooks, config)
+
+
+def edit_theme(theme):
+    print('Not implemented yet.')
+
+
+def list_themes():
+    print('Not implemented yet.')
+
+
+def main():
+    # read args and theme config
+    args = parse_args()
+    if args.cmd == 'set':
+        set_theme(args.theme)
+    if args.cmd == 'edit':
+        edit_theme(args.theme)
+    if args.cmd == 'ls':
+        list_themes()
+    else:
+        print("Command not implemented yet!")
 
 
 if __name__ == '__main__':
