@@ -49,6 +49,14 @@ location (`~/.config/tint/themes/`).
 
 Maybe allow inheritance ...
 
+## Dependencies
+
+Dependencies are in the `requirements.txt`
+
+- *PyYAML*: For reading the yaml files
+- *jinja2*: For handling the templating
+
+
 ## Some more things
 
 Uses jinja for templating.
