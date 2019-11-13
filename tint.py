@@ -62,12 +62,12 @@ def set_theme(theme):
     config = load_config(config_path)
     config['home'] = os.path.expanduser('~')
     # generate paths
-    paths = [os.path.expanduser(p) for p in config['paths'].values()]
+    paths = [os.path.expanduser(p) for p in config['meta']['paths'].values()]
     for path in paths:
         process_template(path + '.template', path, config)
     # run hooks
     hooks = [os.path.join(SCRIPTS_DIR, script_file)
-             for script_file in config['hooks']['post_generate']]
+             for script_file in config['meta']['hooks']['post_generate']]
     process_hooks(hooks, config)
 
 
