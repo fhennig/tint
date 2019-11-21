@@ -12,11 +12,69 @@ THEMES_DIR = os.path.expanduser('~/.config/tint/themes/')
 SCRIPTS_DIR = os.path.expanduser('~/.config/tint/scripts/')
 
 
-def load_config(path: str):
-    """Loads a config file from a path)"""
-    with open(path, 'r') as f:
-        config = yaml.load(f, Loader=yaml.Loader)
+def merge_two_dicts(config, base, path=None):
+    """Merges two configs, overwriting properties in the base."""
+    assert config is not None
+    assert base is not None
+    final = {}
+    keys = set()
+    keys.update(config.keys())
+    keys.update(base.keys())
+    for key in keys:
+        # key only in config
+        if (key in config) and (key not in base):
+            final[key] = config[key]
+        # key only in base
+        elif key not in config and key in base:
+            final[key] = base[key]
+        # key is in both of them
+        else:
+            assert key in config
+            assert key in base
+            # both key values are dicts, recurse
+            if isinstance(config[key], dict) and isinstance(base[key], dict):
+                final[key] = merge_two_dicts(config[key],
+                                             base[key],
+                                             path=f"{path}.{key}")
+            # neither of them are dicts: config has preference
+            elif not isinstance(config[key], dict) and not isinstance(base[key], dict):
+                final[key] = config[key]
+            # something doesn't add up ...
+            else:
+                raise ValueError(f"Types don't match: {path}: {key}")
+    return final
+
+
+def merge_configs(configs):
+    """Takes a list of configs and merges them, with the first one taking
+    precedence over the subsequent ones."""
+    config = {}
+    print(f"received {len(configs)} configs")
+    print(configs)
+    for base in configs:
+        print("asdfasdfasdfasdfasdf")
+        print(config)
+        print(base)
+        config = merge_two_dicts(config, base)
     return config
+
+
+def load_config(config_path: str):
+    """Loads a config file from a path.
+    Also takes care of  merging in base configs."""
+    configs = []
+    while config_path is not None:
+        print(f'loading {config_path}')
+        with open(config_path, 'r') as f:
+            config = yaml.load(f, Loader=yaml.Loader)
+            configs.append(config)
+            print(config)
+            base_filename = config.get('meta', {}).get('base', None)
+            if base_filename is not None:
+                config_path = os.path.join(THEMES_DIR, base_filename)
+            else:
+                config_path = None
+    return merge_configs(configs)
 
 
 def process_template(template_path, out_path, props):
@@ -92,9 +150,9 @@ def main():
     args = parse_args()
     if args.cmd == 'set':
         set_theme(args.theme)
-    if args.cmd == 'edit':
+    elif args.cmd == 'edit':
         edit_theme(args.theme)
-    if args.cmd == 'ls':
+    elif args.cmd == 'ls':
         list_themes()
     else:
         print("Command not implemented yet!")

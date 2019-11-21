@@ -38,16 +38,13 @@ for every `<path>` it expects the file `<path>.template` to be
 present.  If present, it will generate the config file from the
 template.
 
+## Base themes
 
-## TODO
+config files can specify a base theme in `meta.base`.  The base theme
+must be another theme in the themes directory.  Before the config is
+applied, the base theme is loaded.  Properties defined in the theme
+itself take precedence over properties defined in the base.
 
-include shell script hooks to allow running little scripts like
-`i3-reload` or `xrdb -merge ...`.
-
-Handle commandline args.  Handle loading of themes from a default
-location (`~/.config/tint/themes/`).
-
-Maybe allow inheritance ...
 
 ## Dependencies
 
