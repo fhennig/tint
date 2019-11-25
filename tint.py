@@ -59,9 +59,53 @@ def merge_configs(configs):
     return config
 
 
+def traverse(config_or_value, out, path):
+    c = config_or_value
+    if isinstance(c, dict):
+#        return {key: traverse(c[key], 
+#        for key in config_or_value:
+        pass
+
+
+def get_path_in_dict(d, path):
+    val = d
+    while len(path) > 0 and val is not None:
+        val = val.get(path[0], None)
+        path = path[1:]
+    return val
+
+
+def set_path_in_dict(d, path, val):
+    current = d
+    while len(path) > 1:
+        if path[0] not in current:
+            current[path[0]] = {}
+        current = current[path[0]]
+        path = path[1:]
+    current[path[0]] = val
+
+
+def resolve_config(config):
+    new_config = {}
+    stack = [((), config)]
+    while len(stack) > 0:
+        path, cv = stack.pop()  # cv: config or value
+        if isinstance(cv, dict):
+            for key, val in cv.items():
+                stack.append((path + (key,), val))
+        elif isinstance(cv, str) and cv.startswith('->'):
+            target_path = tuple(cv[2:].split('.'))
+            val = get_path_in_dict(config, target_path)
+            set_path_in_dict(new_config, path, val)  # set directly, no further resolving.
+        else:
+            set_path_in_dict(new_config, path, cv)
+    return new_config
+
+
 def load_config(config_path: str):
     """Loads a config file from a path.
-    Also takes care of  merging in base configs."""
+    Reads the base config and merges it.
+    Resolves reference keys."""
     configs = []
     while config_path is not None:
         print(f'loading {config_path}')
@@ -74,7 +118,9 @@ def load_config(config_path: str):
                 config_path = os.path.join(THEMES_DIR, base_filename)
             else:
                 config_path = None
-    return merge_configs(configs)
+    config = merge_configs(configs)
+    config = resolve_config(config)
+    return config
 
 
 def process_template(template_path, out_path, props):
