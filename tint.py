@@ -59,14 +59,6 @@ def merge_configs(configs):
     return config
 
 
-def traverse(config_or_value, out, path):
-    c = config_or_value
-    if isinstance(c, dict):
-#        return {key: traverse(c[key], 
-#        for key in config_or_value:
-        pass
-
-
 def get_path_in_dict(d, path):
     val = d
     while len(path) > 0 and val is not None:
